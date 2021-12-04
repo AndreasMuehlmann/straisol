@@ -48,16 +48,21 @@ char* get_straights(FILE* file)
 
         while ((c = fgetc(file)) != EOF)
         {
-            if (c == ' '){
+            if (c == ' ')
+            {
                 if (last == '.') 
                     line[size_of_line++] = last;
             }
 
-            else if (c == '\t'){
+            else if (c == '\t')
+            {
                 if (last == '.') 
                     line[size_of_line++] = last;
             }
-    
+
+            else if (c == 'e')
+                line[size_of_line++] = c;
+
             else if (c <= '9' && c >= '1')
                 if (last == '.')
                 {
@@ -138,8 +143,7 @@ int is_filled(char * index)
 {
     if (index == '.')
         return 0;
-    else 
-        return 1;
+    return 1;
 }
 
 int is_possible(riddle, number, columm, row)
