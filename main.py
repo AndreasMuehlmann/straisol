@@ -1,11 +1,45 @@
+import sys
 from colorama import init, Fore, Back, Style
+
+#TODO: check if input is valid with interferring_numbers => dont check the square itself
+#TODO: make a readme
+#TODO: make an executable
 
 init(autoreset=True)
 
-#TODO: debug is_possible
-#TODO: debug range numbers can be in
-
 MAXNUMBER = 9
+
+def read_straights(file):
+    straights = []
+    empty_rows = 0
+    for row_count, row in enumerate(file):
+        row = row.strip().split()
+        assert len(row) <= 9, f'There can only be 9 columms (row: {row_count + 1})'
+        if not row:
+            continue
+
+        for columm_count, square in enumerate(row):
+            assert len(square) <= 2, f'One square can only contain two symbols (row: {row_count + 1}, columm: {columm_count + 1}.'
+
+            if len(square) == 1:
+                assert square.isdigit() or square == '.' or square == 'e',\
+                    f'A square with one symbol can only contain an "e", a ".", a digit from "1" to "9" (row: {row_count + 1}, columm: {columm_count + 1}).'
+                if square.isdigit():
+                    assert 1 <= int(square) <= 9,\
+                        f'Numbers can only be digits from "1" to "9" (row: {row_count + 1}, columm: {columm_count + 1}).'
+
+            else: 
+                assert square[0] == '.',\
+                    f'A square with two symbols can only contain a "." as first character (row: {row_count + 1}, columm: {columm_count + 1}).'
+                assert square[1].isdigit(),\
+                    f'A square with two symbols can only contain a digit from "1" to "9" as a second symbol (row: {row_count + 1}, columm: {columm_count + 1}).'
+                assert 1 <= int(square[1]) <= 9,\
+                    f'Numbers can only be digits from "1" to "9" (row: {row_count + 1}, columm: {columm_count + 1}).'
+
+        straights.append(row)
+
+    assert len(straights) <= 9, f'There can only be 9 rows'
+    return straights
 
 def give_numbers_horizontal(straights, static_index, search_range):
     numbers = []
@@ -80,6 +114,8 @@ def give_interferring_numbers_and_free_squares(straights, x, y):
 
 def give_possible_numbers(interferring_numbers, free_squares):
     numbers = [i for i in range(1, MAXNUMBER + 1)]
+    if not interferring_numbers:
+        return numbers
     numbers = filter(lambda number : (min(interferring_numbers) - free_squares <= number <= max(interferring_numbers) + free_squares), numbers)
     numbers = filter(lambda number : (number not in interferring_numbers), numbers)
     return numbers
@@ -113,20 +149,6 @@ def solve(straights, x , y):
 
     return straights, False 
 
-def write_straights(straights, file):
-        for line in straights:
-
-            file.write('-------------------------------------------------------------\n')
-
-            file.write('|')
-            for square in line:
-                file.write(f'\t{square}\t|')
-
-            file.write('\n') 
-
-        file.write('-------------------------------------------------------------\n')
-
-
 def print_straights(straights):
         for line in straights:
 
@@ -142,40 +164,15 @@ def print_straights(straights):
 
         print('-------------------------------------')
 
-def write_frohe_weihnachten(file):
-    file.write('\t\t+-------------------------------------------+\n')
-    file.write('\t\t |         FROHE WHEINACHTEN     |\n')
-    file.write('\t\t+-------------------------------------------+\n\n')
-
 def print_frohe_weihnachten():
     print(Fore.RED + '+-------------------------------+')
     print(Fore.RED + '|         FROHE WHEINACHTEN     |')
     print(Fore.RED + '+-------------------------------+\n')
 
 def main():
-    straights_empty = [
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-    ]
-
-    straights = [
-        ["e", "e", "1", "e", "e", "e", "e", "e", "."],
-        ["e", "3", "e", "e", "e", "e", "e", "e", "e"],
-        ["e", "e", "5", "6", "e", "e", ".", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "5", "e", "e"],
-        ["e", "e", "e", ".4", "e", "e", "7", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "2", "e", ".4"],
-        ["e", "e", ".", "e", ".", "e", "1", ".", "e"],
-        ["e", "e", "9", "e", "e", "e", "6", "e", "e"],
-        ["e", "e", "e", "e", "e", "e", "e", "e", "e"],
-    ]
+    assert len(sys.argv) == 2, f'The programm takes one argument, the input file. {len(sys.argv) - 1} where given.'
+    with open(sys.argv[1], 'r') as file:
+        straights = read_straights(file)
 
     solved_straights, possible = solve(straights, 0, 0)
     if possible:
