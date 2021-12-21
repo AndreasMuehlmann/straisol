@@ -1,0 +1,9 @@
+e 3 e . e e e e e 
+e e e 4 e e e 2 e 
+e . e e e e e . e 
+e e e . e e e e e 
+. e e . e e e e e 
+e e e . . e e e e 
+. e e 5 e e e e e 
+e e 3 . e e e e . 
+e 2 e e e e . 8 e 
