@@ -1,15 +1,12 @@
 import sys
 from colorama import init, Fore, Back, Style
 
-#TODO: make an executable
-
 init(autoreset=True)
 
 MAXNUMBER = 9
 
 def read_straights(file):
     straights = []
-    empty_rows = 0
     for row_count, row in enumerate(file):
         row = row.strip().split()
         assert len(row) <= 9, f'There can only be 9 columms (row: {row_count + 1})'
@@ -54,9 +51,20 @@ def is_valid(straights):
             else:
                 number = int(straights[y][x])
 
-            interferring_numbers, _ = give_interferring_numbers_and_free_squares(straights, x, y)
+            interferring_numbers, free_squares = give_interferring_numbers_and_free_squares(straights, x, y)
             if  number in interferring_numbers:
                 return False, y + 1, x + 1
+
+            '''
+            if not interferring_numbers:
+                continue
+
+            interferring_numbers.add(number)
+            if min(interferring_numbers) + free_squares < max(interferring_numbers):
+            return False, y + 1, x + 1
+
+            doesnt work yet, because cant know if interferring numbers are from columm or row
+            '''
 
     return True, -1, -1
 
