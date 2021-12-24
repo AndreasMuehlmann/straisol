@@ -51,24 +51,15 @@ def is_valid(straights):
             else:
                 number = int(straights[y][x])
 
-            interferring_numbers, free_squares = give_interferring_numbers_and_free_squares(straights, x, y)
-            if  number in interferring_numbers:
+            interferring_numbers_v, free_squares_v = give_interferring_numbers_and_free_squares_v(straights, x, y)
+            interferring_numbers_h, free_squares_h = give_interferring_numbers_and_free_squares_h(straights, x, y)
+
+            if  number in interferring_numbers_v or number in interferring_numbers_h:
                 return False, y + 1, x + 1
-
-            '''
-            if not interferring_numbers:
-                continue
-
-            interferring_numbers.add(number)
-            if min(interferring_numbers) + free_squares < max(interferring_numbers):
-            return False, y + 1, x + 1
-
-            doesnt work yet, because cant know if interferring numbers are from columm or row
-            '''
 
     return True, -1, -1
 
-def give_numbers_horizontal(straights, static_index, search_range):
+def give_numbers_h(straights, static_index, search_range):
     numbers = []
     free_squares = 0
     for changing_index in search_range:
@@ -78,7 +69,7 @@ def give_numbers_horizontal(straights, static_index, search_range):
         elif straights[static_index][changing_index] == '.':
             break
 
-        elif len(straights) == 2:
+        elif len(straights[static_index][changing_index]) == 2:
             if straights[static_index][changing_index][1].isdigit():
                 numbers.append(int(straights[static_index][changing_index][1]))
             break
@@ -88,7 +79,7 @@ def give_numbers_horizontal(straights, static_index, search_range):
 
     return numbers, free_squares
 
-def give_numbers_vertical(straights, static_index, search_range):
+def give_numbers_v(straights, static_index, search_range):
     numbers = []
     free_squares = 0
     for changing_index in search_range:
@@ -98,7 +89,7 @@ def give_numbers_vertical(straights, static_index, search_range):
         elif straights[changing_index][static_index] == '.':
             break
 
-        elif len(straights) == 2:
+        elif len(straights[changing_index][static_index]) == 2:
             if straights[changing_index][static_index][1].isdigit():
                 numbers.append(int(straights[changing_index][static_index][1]))
             break
@@ -108,41 +99,51 @@ def give_numbers_vertical(straights, static_index, search_range):
 
     return numbers, free_squares
 
-def give_interferring_numbers_and_free_squares(straights, x, y):
+def give_interferring_numbers_and_free_squares_v(straights, x, y):
     numbers = set()
     free_squares = 0
 
-    new_numbers, new_free_squares = give_numbers_horizontal(straights, y, range(x + 1, MAXNUMBER, 1))
+    new_numbers, new_free_squares = give_numbers_v(straights, x, range(y + 1, MAXNUMBER, 1))
     free_squares += new_free_squares
     numbers.update(new_numbers)
 
-    new_numbers, new_free_squares = give_numbers_horizontal(straights, y, range(x - 1, -1, -1))
+    new_numbers, new_free_squares = give_numbers_v(straights, x, range(y - 1, -1, -1))
     free_squares += new_free_squares
     numbers.update(new_numbers)
 
-    new_numbers, new_free_squares = give_numbers_vertical(straights, x, range(y + 1, MAXNUMBER, 1))
+    return numbers, free_squares
+
+def give_interferring_numbers_and_free_squares_h(straights, x, y):
+    numbers = set()
+    free_squares = 0
+
+    new_numbers, new_free_squares = give_numbers_h(straights, y, range(x + 1, MAXNUMBER, 1))
     free_squares += new_free_squares
     numbers.update(new_numbers)
 
-    new_numbers, new_free_squares = give_numbers_vertical(straights, x, range(y - 1, -1, -1))
+    new_numbers, new_free_squares = give_numbers_h(straights, y, range(x - 1, -1, -1))
     free_squares += new_free_squares
     numbers.update(new_numbers)
-
-    #for the square itself
-    free_squares += 1
 
     return numbers, free_squares
 
 def give_possible_numbers(interferring_numbers, free_squares):
-    numbers = [i for i in range(1, MAXNUMBER + 1)]
+    numbers = [number for number in range(1, MAXNUMBER + 1)]
     if not interferring_numbers:
         return numbers
-    numbers = filter(lambda number : (min(interferring_numbers) - free_squares <= number <= max(interferring_numbers) + free_squares), numbers)
-    numbers = filter(lambda number : (number not in interferring_numbers), numbers)
+    numbers = list(filter(lambda number : (min(interferring_numbers) - free_squares <= number\
+        and number <= max(interferring_numbers) + free_squares), numbers))
+    numbers = list(filter(lambda number : (number not in interferring_numbers), numbers))
     return numbers
     
 
 def solve(straights, x , y):
+    if y == 4 and x == 5:
+        r = 1
+    if y == 5 and x == 5:
+        r = 2
+    if y == 6 and x == 2:
+        r = 3
     if y >= MAXNUMBER:
         return straights, True
 
@@ -150,9 +151,22 @@ def solve(straights, x , y):
         if x == 8:
             return solve(straights, 0, y + 1)
         return solve(straights, x + 1, y)
+    
 
-    interferring_numbers, free_squares = give_interferring_numbers_and_free_squares(straights, x, y)
-    for number in give_possible_numbers(interferring_numbers, free_squares):
+    interferring_numbers_h, free_squares_h = give_interferring_numbers_and_free_squares_h(straights, x, y)
+    #for the square itself
+    free_squares_h += 1
+    possible_numbers_h = give_possible_numbers(interferring_numbers_h, free_squares_h)
+
+    interferring_numbers_v, free_squares_v = give_interferring_numbers_and_free_squares_v(straights, x, y)
+    #for the square itself
+    free_squares_v += 1
+    possible_numbers_v = give_possible_numbers(interferring_numbers_v, free_squares_v)
+
+    possible_numbers = [number for number in range(1, MAXNUMBER + 1)\
+        if number in possible_numbers_h and number in possible_numbers_v]
+
+    for number in possible_numbers:
         temp = straights[y][x]
         straights[y][x] = str(number)
 
@@ -187,7 +201,7 @@ def print_straights(straights):
 
 def print_frohe_weihnachten():
     print(Fore.RED + '+-------------------------------+')
-    print(Fore.RED + '|         FROHE WHEINACHTEN     |')
+    print(Fore.RED + '|         FROHE WEIHNACHTEN     |')
     print(Fore.RED + '+-------------------------------+\n')
 
 def main():
@@ -195,8 +209,8 @@ def main():
     with open(sys.argv[1], 'r') as file:
         straights = read_straights(file)
 
-    valid, x, y = is_valid(straights)
-    assert valid, f'A number is conflicting with the number in row: {y} and columm: {x}.'
+   #valid, x, y = is_valid(straights)
+   #assert valid, f'A number is conflicting with the number in row: {y} and columm: {x}.'
 
     solved_straights, possible = solve(straights, 0, 0)
     if possible:
