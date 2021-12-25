@@ -3,8 +3,8 @@ Straisol
 License: MIT
 Creator: Andreas Mühlmann
 
-Straisol is a programm to solve a straights riddle. If you don't know what straights is or how it works, look 
-here: https://de.wikipedia.org/wiki/Str8ts
+Straisol is a programm to solve a straights riddle or to give you hints while solving one. If you don't know what straights is or how it works,
+look here: https://de.wikipedia.org/wiki/Str8ts
 
 Quickstart:
     - Make a riddle to be solved:
@@ -31,3 +31,4 @@ Quickstart:
 
     -open a terminal and make sure your in the directory of the programm
     -run the programm by typing ".\straisol.exe <filename>" into the terminal
+    -to get hints run the programm with ".\straisol.exe <filename> -h"
