@@ -2,6 +2,7 @@ Straisol
 
 License: MIT
 Creator: Andreas Mühlmann
+Also on Github for latest changes: https://github.com/AndreasMuehlmann/straisol
 
 Straisol is a programm to solve a straights riddle or to give you hints while solving one. If you don't know what straights is or how it works,
 look here: https://de.wikipedia.org/wiki/Str8ts

@@ -214,8 +214,8 @@ def solve(straights, x , y):
 def give_hints(straights):
     print('"exit" to exit the programm.')
     print('"solution" to see the solution.')
-    print('a number from 1 to 9 as koordinates to get the content.')
-    print('For example "3 5" shows the content of the square in columm 3 and row 5')
+    print('A number from 1 to 9 as koordinates to get the content.')
+    print('For example "3 5" shows the content of the square in columm 3 and row 5.')
     while True:
         message = input('Enter a message\n')
         if message == 'exit':
@@ -227,15 +227,15 @@ def give_hints(straights):
         else:
             message = message.split()
             if len(message) != 2:
-                print('only two koordinates')
+                print('There must be two koordinates.')
                 continue
             
             elif not message[0].isdigit() and not message[1].isdigit():
-                print('koodinates have to be numbers')
+                print('Koodinates have to be numbers.')
                 continue
 
             elif not 1 <= int(message[0]) <= 9 and not 1 <= int(message[0]) <= 9:
-                print('koordinates have to be from 1 to 9')
+                print('Koordinates have to be from 1 to 9.')
                 continue
             
             else:
@@ -259,7 +259,7 @@ def print_straights(straights):
 
 def print_STRAIGHTS():
     print(Fore.BLUE + '      +---------------------+')
-    print(Fore.BLUE + '      |       STRAIGHTS     |')
+    print(            '      |       STRAIGHTS     |')
     print(Fore.BLUE + '      +---------------------+\n')
 
 def main():
