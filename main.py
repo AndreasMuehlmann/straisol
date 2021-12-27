@@ -48,21 +48,30 @@ def is_valid(straights):
             if len(straights[y][x]) == 2:
                 number = int(straights[y][x][1])
 
+                interferring_numbers_v, interferring_numbers_in_bound_v, free_squares_v =\
+                    give_interferring_in_bound_and_freesquares_v(straights, x, y)
+                interferring_numbers_h, interferring_numbers_in_bound_h, free_squares_h =\
+                    give_interferring_in_bounds_and_freesquares_h(straights, x, y)
+
+                if  number in interferring_numbers_v or number in interferring_numbers_h:
+                    return False, x + 1, y + 1
+                continue
+
             else:
                 number = int(straights[y][x])
 
             interferring_numbers_v, interferring_numbers_in_bound_v, free_squares_v =\
                 give_interferring_in_bound_and_freesquares_v(straights, x, y)
             if not number in give_possible_numbers(interferring_numbers_v, interferring_numbers_in_bound_v, free_squares_v):
-                return False, y + 1, x + 1
+                return False, x + 1, y + 1
                 
             interferring_numbers_h, interferring_numbers_in_bound_h, free_squares_h =\
             give_interferring_in_bounds_and_freesquares_h(straights, x, y)
             if not number in give_possible_numbers(interferring_numbers_h, interferring_numbers_in_bound_h, free_squares_h):
-                return False, y + 1, x + 1
+                return False, x + 1, y + 1
 
             if  number in interferring_numbers_v or number in interferring_numbers_h:
-                return False, y + 1, x + 1
+                return False, x + 1, y + 1
 
     return True, -1, -1
 
